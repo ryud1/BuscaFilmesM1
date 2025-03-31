@@ -11,8 +11,8 @@ app.use(express.static(path.join(__dirname)));
 app.use(cors());
 app.use(express.json());
 
-const OMDB_API_KEY = process.env.OMDB_API_KEY;
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const OMDB_API_KEY = "b93399e3";
+const TMDB_API_KEY = "5a2b4a28c5fe1cda4c70a8c6d195c081";
 
 app.get("/buscar-filme", async (req, res) => {
     const { titulo, ano } = req.query;
