@@ -62,11 +62,11 @@
                     alert(data.erro);
                 } else {
                     console.log(data);
-                    document.getElementById("movieTitle").textContent = `${data.titulo} (${data.ano})`;
+                    document.getElementById("movieTitle").textContent = `${data.nome} (${data.ano})`;
                     document.getElementById("synopsis").textContent = `Sinopse: ${data.sinopse}`;
-                    if (data.poster && data.poster !== "N/A") {
-                        console.log(data.poster);
-                        document.getElementById("poster").src = data.poster;
+                    if (data.imagem && data.imagem !== "N/A") {
+                        console.log(data.imagem);
+                        document.getElementById("poster").src = data.imagem;
                         document.getElementById("poster").alt = `Pôster de ${data.nome}`;
                     } else {
                         document.getElementById("poster").src = "./padrao.jpg";
