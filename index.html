@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee+Tint&display=swap" rel="stylesheet">
+    <link rel="icon" href="./movie-clapper-open.png" type="image/png">
+    <title>BuscaFilmes</title>
+</head>
+<body>
+    <form id="searchForm">
+        <div  class="container-form">
+            <div class="bungee-tint-regular">BuscaFilmes</div> 
+            <div class="fields"> 
+                <input id="name" placeholder="Nome do Filme" type="text" required>
+                <input id="year" placeholder="Ano do Filme" type="number">
+            </div>
+            <div class="button-container">
+                <button id="search" type="submit">Procurar</button>
+            </div>
+        </div>
+    </form>
+
+    <div id="loading" style="display: none;">Carregando...</div>
+
+    <div id="result" class="result-container" style="display: none;">
+        <div class="poster-container">
+            <img id="poster" src="" alt="Pôster do Filme" class="poster">
+        </div>
+        <div class="movie-details">
+            <h2 id="movieTitle"></h2>
+            <p id="movieYear"></p>
+            <p id="synopsis"></p>
+            <h3>Reviews:</h3>
+            <ul id="reviewsList"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("searchForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const titulo = document.getElementById("name").value;
+            const ano = document.getElementById("year").value;
+
+            if (!titulo) {
+                alert("Por favor, insira o nome do filme!");
+                return;
+            }
+
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("result").style.display = "none";
+
+            try {
+                const response = await fetch(`http://localhost:3000/buscar-filme?titulo=${encodeURIComponent(titulo)}&ano=${ano}`);
+                const data = await response.json();
+
+                if (data.erro) {
+                    alert(data.erro);
+                } else {
+                    console.log(data);
+                    document.getElementById("movieTitle").textContent = `${data.titulo} (${data.ano})`;
+                    document.getElementById("synopsis").textContent = `Sinopse: ${data.sinopse}`;
+                    if (data.poster && data.poster !== "N/A") {
+                        console.log(data.poster);
+                        document.getElementById("poster").src = data.poster;
+                        document.getElementById("poster").alt = `Pôster de ${data.nome}`;
+                    } else {
+                        document.getElementById("poster").src = "./padrao.jpg";
+                    }                  
+
+                    const reviewsList = document.getElementById("reviewsList");
+                    reviewsList.innerHTML = '';
+                    data.reviews.forEach(review => {
+                        const listItem = document.createElement("li");
+                        listItem.innerHTML = `<strong>${review.autor}:</strong> ${review.conteudo}`;
+                        reviewsList.appendChild(listItem);
+                    });
+
+                    document.getElementById("result").style.display = "flex";
+                }
+            } catch (error) {
+                console.error("Erro ao buscar filme:", error);
+                alert("Erro ao buscar informações do filme.");
+            } finally {
+                document.getElementById("loading").style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
